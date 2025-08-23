@@ -1,0 +1,50 @@
+﻿C#
+C++
+Python
+Java
+JavaScript
+TypeScript
+ASP.NET
+Blazor
+SQL
+MySQL
+MongoDB
+Oracle SQL
+Entity Framework
+Azure
+Azure DevOps
+Docker
+Terraform
+REST
+SOAP
+Unity3D
+Kinect
+Git
+Linux
+Bash
+Perl
+NET Core
+.NET Framework
+.NET 3.1–8.0
+JQuery
+PHP
+HTML
+CSS
+SOQL
+SSMS
+Oracle SQL Developer
+NOMAD
+Salesforce
+Azure Logic Apps
+Azure Data Factory
+Azure Storage Apps
+Tableau
+Havok Anarchy Engine
+Xbox Kinect SDK
+CentOS
+RedHat
+Cisco Networking
+Router/Switch Maintenance
+Unit Testing
+Agile
+Scrum

@@ -1,0 +1,81 @@
+from fastapi import FastAPI, UploadFile, File
+from parser_app.io_loaders import load_text
+from parser_app.sectioning import split_sections
+from parser_app.extractors import (
+    extract_email, 
+    extract_phone, 
+    guess_name,
+    load_skill_list, 
+    extract_skills,
+    extract_github_url, 
+    extract_linkedin_url
+)
+from parser_app.work_history import parse_experience_from_whole_text
+from parser_app.education import parse_education_section
+from parser_app.simple_sections import extract_profile, parse_achievements
+from parser_app.schema import Resume, Candidate, Experience, Education
+import os, tempfile, shutil
+
+app = FastAPI(title="Resume Parser API")
+
+SKILLS_PATH = os.path.join(os.path.dirname(__file__), "..", "parser_app", "skills", "skills_esco.txt")
+SKILLS = load_skill_list(SKILLS_PATH) if os.path.exists(SKILLS_PATH) else []
+
+@app.post("/parse", response_model=Resume)
+async def parse_resume(file: UploadFile = File(...)):
+    with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(file.filename)[1]) as tmp:
+        shutil.copyfileobj(file.file, tmp)
+        temp_path = tmp.name
+
+    text = load_text(temp_path)
+    sections = split_sections(text)
+
+    email = extract_email(text)
+    phone = extract_phone(text)
+    name  = guess_name(text)
+    github = extract_github_url(text)
+    linkedin = extract_linkedin_url(text)
+    skills = extract_skills(text, SKILLS) if SKILLS else []
+
+    wh_items = parse_experience_from_whole_text(sections, text)
+    experience = [
+        Experience(
+            title=item.title,
+            company=item.company,
+            start_date=item.start_date,
+            end_date=item.end_date,
+            description="\n".join(item.description_lines) if item.description_lines else None
+        )
+        for item in wh_items
+    ]
+
+    education = []
+    if sections:
+        for k, v in sections.items():
+            if "education" in k.lower():
+                education = parse_education_section(v)
+                break
+
+    profile = extract_profile(sections, text)
+    achievements = []
+    if sections:
+        for k, v in sections.items():
+            if "achievements" in k.lower() or "awards" in k.lower():
+                achievements = parse_achievements(v)
+                break
+
+    return Resume(
+        candidate=Candidate(
+            name=name,
+            email=email,
+            phone=phone,
+            github_url=github,
+            linkedin_url=linkedin
+        ),
+        education=education,
+        experience=experience,
+        skills=skills,
+        profile=profile,
+        achievements=achievements,
+        raw_text=text
+    )
