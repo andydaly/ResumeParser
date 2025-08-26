@@ -165,7 +165,3 @@ repo/
 ## Contributing
 
 Pull requests are welcome! If you’d like to add new parsers (e.g., certifications, publications), feel free to open an issue first to discuss.
-
-## 🤝 Contributing
-
-Pull requests are welcome! If you’d like to add new parsers (e.g., certifications, publications), feel free to open an issue first to discuss.
