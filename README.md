@@ -67,7 +67,7 @@ It parses uploaded `.docx`, `.pdf`, or `.txt` resumes into clean JSON fields, ma
 
 3. **Install dependencies**
   ```bash
-  pip install -r requirements.txt
+  pip install -r requirements.txt 
 
 4. **Run the API**
   ```bash
