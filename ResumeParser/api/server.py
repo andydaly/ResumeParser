@@ -12,7 +12,7 @@ from parser_app.extractors import (
 )
 from parser_app.work_history import parse_experience_from_whole_text
 from parser_app.education import parse_education_section
-from parser_app.simple_sections import extract_profile, parse_achievements
+from parser_app.simple_sections import extract_profile, parse_achievements, parse_skills_profile, get_section_text
 from parser_app.schema import Resume, Candidate, Experience, Education
 import os, tempfile, shutil
 
@@ -57,12 +57,15 @@ async def parse_resume(file: UploadFile = File(...)):
                 break
 
     profile = extract_profile(sections, text)
-    achievements = []
-    if sections:
-        for k, v in sections.items():
-            if "achievements" in k.lower() or "awards" in k.lower():
-                achievements = parse_achievements(v)
-                break
+
+    achievements_text = get_section_text(sections, ["achievements", "awards"])
+    achievements = parse_achievements(achievements_text) if achievements_text else []
+
+    skills_profile_text = get_section_text(
+        sections,
+        ["computer skills profile", "technical skills profile", "computer skills"]
+    )
+    skills_profile = parse_skills_profile(skills_profile_text) if skills_profile_text else None
 
     return Resume(
         candidate=Candidate(
@@ -76,6 +79,7 @@ async def parse_resume(file: UploadFile = File(...)):
         experience=experience,
         skills=skills,
         profile=profile,
+        skills_profile=skills_profile,
         achievements=achievements,
         raw_text=text
     )

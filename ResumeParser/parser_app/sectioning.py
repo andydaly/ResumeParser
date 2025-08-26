@@ -7,7 +7,8 @@ SECTION_HEADERS = [
     r"projects",
     r"certifications",
     r"personal profile|summary|profile",
-    r"achievements|awards"
+    r"achievements|awards",
+    r"computer skills profile|technical skills profile|computer skills"
 ]
 HEADER_RE = re.compile(rf"^\s*({'|'.join(SECTION_HEADERS)})\s*$", re.I | re.M)
 

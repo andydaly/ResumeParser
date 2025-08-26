@@ -1,9 +1,25 @@
 ﻿import re
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Iterable
 
 BULLET_RE = re.compile(
     r"^\s*(?:[\u2022\u2023\u25E6\u002D\u2013\u2014\*]+|(?:\d+[\.\)])\s+)\s*(.*\S)\s*$"
 )
+
+STOP_HDR_RE = re.compile(
+    r"\s*(achievements?|awards?|work history|experience|education|skills?|computer skills profile|technical skills profile|computer skills)\s*",
+    re.I,
+)
+
+def get_section_text(sections: Dict[str, str], candidates: Iterable[str]) -> Optional[str]:
+    if not sections:
+        return None
+    clist = [c.lower() for c in candidates]
+    for k, v in sections.items():
+        kl = k.lower()
+        if any(c in kl for c in clist):
+            return v
+    return None
+
 
 def extract_profile(sections: Dict[str, str], raw_text: str) -> Optional[str]:
     if not sections:
@@ -22,9 +38,9 @@ def extract_profile(sections: Dict[str, str], raw_text: str) -> Optional[str]:
     ranked.sort(key=lambda x: x[0])
     text = ranked[0][1].strip()
 
-    out_lines: List[str] = []
+    out_lines = []
     for ln in text.splitlines():
-        if re.fullmatch(r"\s*(achievements?|awards?|work history|experience|education|skills?)\s*", ln, re.I):
+        if STOP_HDR_RE.fullmatch(ln):
             break
         if ln.strip():
             out_lines.append(ln.strip())
@@ -75,3 +91,8 @@ def parse_achievements(section_text: Optional[str]) -> List[str]:
     flush()
 
     return items
+
+
+def parse_skills_profile(section_text: str) -> Optional[str]:
+    section_text = section_text.strip()
+    return section_text or None

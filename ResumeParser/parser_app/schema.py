@@ -28,4 +28,5 @@ class Resume(BaseModel):
     skills: List[str] = Field(default_factory=list)
     profile: Optional[str] = None
     achievements: List[str] = Field(default_factory=list)
+    skills_profile: Optional[str] = None
     raw_text: Optional[str] = None
