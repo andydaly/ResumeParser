@@ -58,21 +58,110 @@ It parses uploaded `.docx`, `.pdf`, or `.txt` resumes into clean JSON fields, ma
    ```bash
    git clone https://github.com/<your-username>/<your-repo>.git
    cd <your-repo>
+   ```
 
-2. **Create a virtual environment**
-  ```bash
-  python -m venv env
-  source env/bin/activate   # Linux / macOS
-  env\Scripts\activate      # Windows
+2. **Create a virtual environment**  
+   ```bash
+   python -m venv env
+   source env/bin/activate   # Linux / macOS
+   env\Scripts\activate      # Windows
+   ```
 
-3. **Install dependencies**
-  ```bash
-  pip install -r requirements.txt 
+3. **Install dependencies**  
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-4. **Run the API**
-  ```bash
-  uvicorn api.server:app --reload
+4. **Run the API**  
+   ```bash
+   uvicorn api.server:app --reload
+   ```
 
-5. Open your browser at:
-👉 http://127.0.0.1:8000/docs
- (Swagger UI)
+5. Open your browser at:  
+   👉 [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) (Swagger UI)
+
+---
+
+## 📤 Example Usage
+
+**POST /parse**  
+Upload a resume file and receive structured JSON:
+
+```json
+{
+  "candidate": {
+    "name": "Jane Doe",
+    "email": "jane.doe@email.com",
+    "phone": "+44 7555 123456",
+    "github_url": "https://github.com/janedoe",
+    "linkedin_url": "https://www.linkedin.com/in/janedoe"
+  },
+  "education": [
+    {
+      "graduation_date": "2015",
+      "course": "Computer Science",
+      "result": "BSc. 2.1 Honours",
+      "institution": "Institute of Technology"
+    }
+  ],
+  "experience": [
+    {
+      "title": "Software Developer",
+      "company": "Some Company",
+      "start_date": "2020-01",
+      "end_date": "2025-01",
+      "description": "Developed new features..."
+    }
+  ],
+  "skills": ["C#", "Python", "Docker", "Azure", "SQL"],
+  "profile": "Results-driven Software Developer...",
+  "skills_profile": "Computer Programming (C, C++, Java, ...)",
+  "achievements": [
+    "Won a Prize"
+  ],
+  "raw_text": "Full resume text here..."
+}
+```
+
+---
+
+## ☁️ Deployment
+
+This app can be deployed on **Azure App Service (Linux)** (F1 Free Plan) or **Azure Container Apps**.
+
+Minimal startup command for Azure:
+
+```bash
+gunicorn -k uvicorn.workers.UvicornWorker api.server:app --bind=0.0.0.0:8000
+```
+
+For details, see [FastAPI on Azure Docs](https://learn.microsoft.com/en-us/azure/app-service/tutorial-python-fastapi).
+
+---
+
+## 📂 Project Structure
+
+```
+repo/
+│
+├── api/
+│   └── server.py            # FastAPI entry point
+│
+├── parser_app/
+│   ├── sectioning.py        # Resume section splitter
+│   ├── extractors.py        # Candidate + skill extractors
+│   ├── work_history.py      # Work experience parser
+│   ├── education.py         # Education parser
+│   ├── simple_sections.py   # Profile, Achievements, Skills Profile
+│   └── schema.py            # Pydantic models
+│
+├── skills_esco.txt          # Master skill dictionary
+├── requirements.txt
+└── README.md
+```
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome! If you’d like to add new parsers (e.g., certifications, publications), feel free to open an issue first to discuss.
