@@ -1,11 +1,11 @@
-# 📄 Resume Parser API (Python + FastAPI + spaCy)
+# Resume Parser API (Python + FastAPI + spaCy)
 
 A FastAPI-powered web service that extracts structured data from resumes (CVs).  
 It parses uploaded `.docx`, `.pdf`, or `.txt` resumes into clean JSON fields, making it easier to integrate candidate data into HR or recruitment systems.
 
 ---
 
-## 🚀 Features
+## Features
 
 - **Candidate Information**
   - Full name
@@ -40,7 +40,7 @@ It parses uploaded `.docx`, `.pdf`, or `.txt` resumes into clean JSON fields, ma
 
 ---
 
-## 📦 Tech Stack
+## Tech Stack
 
 - [FastAPI](https://fastapi.tiangolo.com/) – modern Python web framework
 - [spaCy](https://spacy.io/) – NLP engine for entity recognition
@@ -52,7 +52,7 @@ It parses uploaded `.docx`, `.pdf`, or `.txt` resumes into clean JSON fields, ma
 
 ---
 
-## 🛠️ Running Locally
+## Running Locally
 
 1. **Clone the repository**  
    ```bash
@@ -78,11 +78,11 @@ It parses uploaded `.docx`, `.pdf`, or `.txt` resumes into clean JSON fields, ma
    ```
 
 5. Open your browser at:  
-   👉 [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) (Swagger UI)
+   [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) (Swagger UI)
 
 ---
 
-## 📤 Example Usage
+## Example Usage
 
 **POST /parse**  
 Upload a resume file and receive structured JSON:
@@ -125,7 +125,7 @@ Upload a resume file and receive structured JSON:
 
 ---
 
-## ☁️ Deployment
+## Deployment
 
 This app can be deployed on **Azure App Service (Linux)** (F1 Free Plan) or **Azure Container Apps**.
 
@@ -139,7 +139,7 @@ For details, see [FastAPI on Azure Docs](https://learn.microsoft.com/en-us/azure
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 repo/
@@ -161,6 +161,10 @@ repo/
 ```
 
 ---
+
+## Contributing
+
+Pull requests are welcome! If you’d like to add new parsers (e.g., certifications, publications), feel free to open an issue first to discuss.
 
 ## 🤝 Contributing
 
