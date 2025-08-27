@@ -93,6 +93,7 @@ Upload a resume file and receive structured JSON:
     "name": "Jane Doe",
     "email": "jane.doe@email.com",
     "phone": "+44 7555 123456",
+    "phone_other": "+353 871234567",
     "github_url": "https://github.com/janedoe",
     "linkedin_url": "https://www.linkedin.com/in/janedoe"
   },
