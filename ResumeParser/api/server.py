@@ -8,7 +8,8 @@ from parser_app.extractors import (
     load_skill_list, 
     extract_skills,
     extract_github_url, 
-    extract_linkedin_url
+    extract_linkedin_url,
+    extract_phone_numbers,         
 )
 from parser_app.work_history import parse_experience_from_whole_text
 from parser_app.education import parse_education_section
@@ -31,7 +32,9 @@ async def parse_resume(file: UploadFile = File(...)):
     sections = split_sections(text)
 
     email = extract_email(text)
-    phone = extract_phone(text)
+    phones = extract_phone_numbers(text, default_regions=("GB","IE"))
+    phone = phones[0] if phones else None
+    phone_other = phones[1] if len(phones) > 1 else None
     name  = guess_name(text)
     github = extract_github_url(text)
     linkedin = extract_linkedin_url(text)
@@ -72,6 +75,7 @@ async def parse_resume(file: UploadFile = File(...)):
             name=name,
             email=email,
             phone=phone,
+            phone_other=phone_other,
             github_url=github,
             linkedin_url=linkedin
         ),

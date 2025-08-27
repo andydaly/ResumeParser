@@ -18,6 +18,7 @@ class Candidate(BaseModel):
     name: Optional[str]
     email: Optional[str]
     phone: Optional[str]
+    phone_other: Optional[str] = None
     github_url: Optional[str] = None
     linkedin_url: Optional[str] = None
 

@@ -32,6 +32,27 @@ def extract_phone(text: str, default_region: str = "GB"):
         best = best or formatted
     return best
 
+def extract_phone_numbers(text: str, default_regions: tuple[str, ...] = ("GB", "IE")) -> list[str]:
+    norm = text.replace("++", "+")
+
+    seen: set[str] = set()
+    results: list[str] = []
+
+    for region in (default_regions or ("GB",)):
+        for m in phonenumbers.PhoneNumberMatcher(norm, region):
+            formatted = phonenumbers.format_number(
+                m.number, phonenumbers.PhoneNumberFormat.INTERNATIONAL
+            )
+            if formatted not in seen:
+                seen.add(formatted)
+                results.append(formatted)
+
+    return results
+
+def extract_phone(text: str, default_region: str = "GB"):
+    nums = extract_phone_numbers(text, default_regions=(default_region,))
+    return nums[0] if nums else None
+
 def guess_name(text: str):
     head = _get_contact_block(text)
     doc = _nlp(head)
