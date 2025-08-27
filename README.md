@@ -126,20 +126,6 @@ Upload a resume file and receive structured JSON:
 
 ---
 
-## Deployment
-
-This app can be deployed on **Azure App Service (Linux)** (F1 Free Plan) or **Azure Container Apps**.
-
-Minimal startup command for Azure:
-
-```bash
-gunicorn -k uvicorn.workers.UvicornWorker api.server:app --bind=0.0.0.0:8000
-```
-
-For details, see [FastAPI on Azure Docs](https://learn.microsoft.com/en-us/azure/app-service/tutorial-python-fastapi).
-
----
-
 ## Project Structure
 
 ```
