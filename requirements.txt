@@ -1,0 +1,15 @@
+pdfplumber
+python-docx
+unstructured
+regex
+dateparser
+phonenumbers
+tldextract
+rapidfuzz
+spacy
+spacy-lookups-data
+presidio-analyzer
+presidio-anonymizer
+fastapi
+uvicorn
+pydantic
