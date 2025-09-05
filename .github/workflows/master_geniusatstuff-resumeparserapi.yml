@@ -13,7 +13,7 @@ on:
 env:
   AZURE_WEBAPP_NAME: geniusatstuff-resumeparserapi
   PYTHON_VERSION: '3.11'
-  PROJECT_PATH: 'ResumeParser/ResumeParser'
+  PROJECT_PATH: '.'
 
 jobs:
   build:
@@ -38,6 +38,9 @@ jobs:
           # sanity: show what we're deploying
           echo "Contents of app_to_deploy:"
           ls -la app_to_deploy
+
+          test -f app_to_deploy/requirements.txt || (echo "requirements.txt not found" && exit 1)
+          test -f app_to_deploy/api/server.py || (echo "api/server.py not found" && exit 1)
       
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v4
@@ -74,3 +77,4 @@ jobs:
           package: .
 
           
+
