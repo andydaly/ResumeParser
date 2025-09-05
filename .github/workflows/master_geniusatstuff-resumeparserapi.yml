@@ -30,15 +30,24 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Create deployable artifact from project subfolder
+      - name: Create deployable artifact from project path
         run: |
+          sudo apt-get update && sudo apt-get install -y rsync
           rm -rf app_to_deploy
           mkdir -p app_to_deploy
-          cp -R "${{ env.PROJECT_PATH }}"/. app_to_deploy/
-          # sanity: show what we're deploying
-          echo "Contents of app_to_deploy:"
+          # copy everything except the artifact dir and stuff we don't want
+          rsync -av \
+            --exclude 'app_to_deploy' \
+            --exclude '.git' \
+            --exclude '.github' \
+            --exclude 'venv' \
+            --exclude 'env' \
+            ./ app_to_deploy/
+
+          echo "== contents of app_to_deploy =="
           ls -la app_to_deploy
 
+          # sanity checks
           test -f app_to_deploy/requirements.txt || (echo "requirements.txt not found" && exit 1)
           test -f app_to_deploy/api/server.py || (echo "api/server.py not found" && exit 1)
       
@@ -77,4 +86,5 @@ jobs:
           package: .
 
           
+
 
