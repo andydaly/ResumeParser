@@ -13,13 +13,13 @@ on:
 env:
   AZURE_WEBAPP_NAME: geniusatstuff-resumeparserapi
   PYTHON_VERSION: '3.11'
-  PROJECT_PATH: '.'
+  PROJECT_PATH: 'ResumeParser'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read
 
     steps:
       - name: Checkout
@@ -35,19 +35,22 @@ jobs:
           sudo apt-get update && sudo apt-get install -y rsync
           rm -rf app_to_deploy
           mkdir -p app_to_deploy
-          # copy everything except the artifact dir and stuff we don't want
+          # Copy ONLY the ResumeParser/ folder contents into the artifact root
           rsync -av \
             --exclude 'app_to_deploy' \
             --exclude '.git' \
             --exclude '.github' \
             --exclude 'venv' \
             --exclude 'env' \
-            ./ app_to_deploy/
+            "${{ env.PROJECT_PATH }}/" app_to_deploy/
 
           echo "== contents of app_to_deploy =="
           ls -la app_to_deploy
+          echo "== tree =="
+          sudo apt-get install -y tree >/dev/null 2>&1 || true
+          tree -L 2 app_to_deploy || true
 
-          # sanity checks
+          # sanity checks: now these files should be at the artifact root
           test -f app_to_deploy/requirements.txt || (echo "requirements.txt not found" && exit 1)
           test -f app_to_deploy/api/server.py || (echo "api/server.py not found" && exit 1)
       
@@ -86,5 +89,6 @@ jobs:
           package: .
 
           
+
 
 
