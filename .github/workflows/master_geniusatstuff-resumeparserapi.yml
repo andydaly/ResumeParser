@@ -10,50 +10,69 @@ on:
       - master
   workflow_dispatch:
 
+env:
+  AZURE_WEBAPP_NAME: geniusatstuff-resumeparserapi
+  PYTHON_VERSION: '3.11'
+  PROJECT_PATH: 'ResumeParser'
+
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Set up Python version
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Create and start virtual environment
+      - name: Create deployable artifact from project path
         run: |
-          python -m venv venv
-          source venv/bin/activate
-      
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-        
-      # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
+          sudo apt-get update && sudo apt-get install -y rsync
+          rm -rf app_to_deploy
+          mkdir -p app_to_deploy
+          # Copy ONLY the ResumeParser/ folder contents into the artifact root
+          rsync -av \
+            --exclude 'app_to_deploy' \
+            --exclude '.git' \
+            --exclude '.github' \
+            --exclude 'venv' \
+            --exclude 'env' \
+            "${{ env.PROJECT_PATH }}/" app_to_deploy/
 
+          echo "== contents of app_to_deploy =="
+          ls -la app_to_deploy
+          echo "== tree =="
+          sudo apt-get install -y tree >/dev/null 2>&1 || true
+          tree -L 2 app_to_deploy || true
+
+          # sanity checks: now these files should be at the artifact root
+          test -f app_to_deploy/requirements.txt || (echo "requirements.txt not found" && exit 1)
+          test -f app_to_deploy/api/server.py || (echo "api/server.py not found" && exit 1)
+      
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v4
         with:
           name: python-app
-          path: |
-            .
-            !venv/
+          path: app_to_deploy
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write
+      contents: read
 
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: python-app
+          path: .
       
       - name: Login to Azure
         uses: azure/login@v2
@@ -66,6 +85,12 @@ jobs:
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'geniusatstuff-resumeparserapi'
-          slot-name: 'Production'
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          package: .
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+          scm-do-build-during-deployment: true
           
+
+
+
+
