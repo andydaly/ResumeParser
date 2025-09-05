@@ -145,7 +145,6 @@ repo/
 ├── skills_esco.txt          # Master skill dictionary
 ├── requirements.txt
 └── README.md
-```
 
 ---
 
