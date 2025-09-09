@@ -48,3 +48,20 @@ Router/Switch Maintenance
 Unit Testing
 Agile
 Scrum
+Kubernetes
+GitHub Actions
+Azure DevOps Pipelines
+CRM Development
+CRM platform experience
+CI/CD
+Software Design
+Integration Development
+Feature Implementation
+Front-End Development
+Back-End Development
+Database Design
+Log Analysis Utilities
+Customer-Facing Engineering
+High-Priority Technical Support
+Agile Collaboration
+Debugging and Optimisation
