@@ -65,3 +65,5 @@ Customer-Facing Engineering
 High-Priority Technical Support
 Agile Collaboration
 Debugging and Optimisation
+MAUI
+Xamarin
