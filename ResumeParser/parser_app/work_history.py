@@ -27,7 +27,7 @@ SEPARATOR_LINE_RE = re.compile(r"^\s*[•\-\u2013\u2014·\.]{2,}\s*$")
 LIKELY_TITLE_TOKENS = {
     "engineer","developer","programmer","lead","senior","principal",
     "architect","manager","consultant","intern","analyst","administrator",
-    "director","specialist"
+    "director","specialist","freelance"
 }
 
 @dataclass
@@ -53,18 +53,33 @@ def _norm_date(token: str | None) -> Optional[str]:
 
     return dt.strftime("%Y-%m")
 
+def _looks_like_title(s: str) -> bool:
+    low = s.lower()
+    return any(tok in low for tok in LIKELY_TITLE_TOKENS)
+
 def _split_header_guess_title_company(header: str) -> Tuple[Optional[str], Optional[str]]:
     s = header.strip()
 
     m = DATE_RANGE_RE.match(s)
     if m:
-        s = s[m.end():] 
+        s = s[m.end():]
         s = re.sub(rf"^\s*{DASH}\s*", "", s) 
+
+    m_at = re.search(r"\s(?:at|@)\s(.+)$", s, re.I)
+    if m_at:
+        before = s[:m_at.start()].strip(" -\u2013\u2014")
+        company = m_at.group(1).strip(" -\u2013\u2014")
+        title = before or None
+        if company and _looks_like_title(company):
+            return (s.strip(" -\u2013\u2014") or None, None)
+        return (title, company or None)
 
     parts = SPLIT_LAST_DASH_RE.split(s)
     if len(parts) >= 2:
         title = " - ".join(parts[:-1]).strip(" -\u2013\u2014")
         company = parts[-1].strip(" -\u2013\u2014")
+        if company and _looks_like_title(company):
+            return (s.strip(" -\u2013\u2014") or None, None)
         return (title or None, company or None)
 
     return (s.strip(" -\u2013\u2014") or None, None)
@@ -83,9 +98,9 @@ def _collect_description(lines: List[str], start_idx: int) -> Tuple[List[str], i
     i = start_idx
     while i < len(lines):
         raw = lines[i].rstrip()
-        if _looks_like_header(raw): 
+        if _looks_like_header(raw):
             break
-        if not raw.strip():         
+        if not raw.strip():
             if desc and desc[-1] != "":
                 desc.append("")
             i += 1
@@ -96,7 +111,6 @@ def _collect_description(lines: List[str], start_idx: int) -> Tuple[List[str], i
         else:
             desc.append(raw.strip())
         i += 1
-    # trim trailing blank
     while desc and desc[-1] == "":
         desc.pop()
     return desc, i

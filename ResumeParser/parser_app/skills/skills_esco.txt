@@ -67,3 +67,20 @@ Agile Collaboration
 Debugging and Optimisation
 MAUI
 Xamarin
+C
+Ruby
+Liquid (Shopify)
+GraphQL
+GraphQL APIs
+REST APIs
+RESTful APIs
+SQL Server
+Windows Server
+Shopify
+Cross-Platform Development
+Mobile Development (Android & iOS)
+Android
+iOS
+E-commerce Customization
+API Development / Integration
+Legacy Modernisation
